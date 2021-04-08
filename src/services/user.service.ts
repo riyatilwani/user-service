@@ -6,40 +6,41 @@ import { validateParams } from '../util/validate';
 // In memory store
 let activeUsers: User[] = [];
 
+const validationParams = [
+    {
+        paramKey: 'username',
+        required: true,
+        type: 'string'
+    },
+    {
+        paramKey: 'password',
+        required: true,
+        type: 'string',
+        validatorFunctions: [(param: string) => { return (/^.{6,}$/.test(param)) }]
+    },
+    {
+        paramKey: 'firstName',
+        required: true,
+        type: 'string',
+    },
+    {
+        paramKey: 'lastName',
+        required: true,
+        type: 'string',
+    },
+    {
+        paramKey: 'mobile',
+        required: true,
+        type: 'number',
+        validatorFunctions: [(param: string) => { return (/^\d{10}$/.test(param)) }]
+    }
+];
+
 const find = async (username: string): Promise<User> => activeUsers.find(user => user.username === username);
 
 export const uploadUsers = async (userlist: BaseUser[]): Promise<User[]> => {
     const onboardingUsers: User[] = [];
     userlist.forEach(userObj => {
-        const validationParams = [
-            {
-                paramKey: 'username',
-                required: true,
-                type: 'string'
-            },
-            {
-                paramKey: 'password',
-                required: true,
-                type: 'string',
-                validatorFunctions: [(param: string) => { return (/^.{6,}$/.test(param)) }]
-            },
-            {
-                paramKey: 'firstName',
-                required: true,
-                type: 'string',
-            },
-            {
-                paramKey: 'lastName',
-                required: true,
-                type: 'string',
-            },
-            {
-                paramKey: 'mobile',
-                required: true,
-                type: 'number',
-                validatorFunctions: [(param: string) => { return (/^\d{10}$/.test(param)) }]
-            }
-        ];
         validateParams(userObj, validationParams);
         const newUser: User = {
             firstName: userObj.firstName,
